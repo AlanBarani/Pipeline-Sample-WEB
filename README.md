@@ -1,3 +1,6 @@
+# Nota Previa
+ Este pipeline fue desarrollado durante el periodo de practica profesional en CrowdAr utilizando el framework de automatizacion [Lippia](https://lippia.io/ "Lippia."), desarrollado por la misma empresa.
+
 # Pipeline Sample WEB
  Es un proyecto que tiene como finalidad automatizar el testeo del codigo ingresado al repositorio, utilizando el framework Lippia.
 
