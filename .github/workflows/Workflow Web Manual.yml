@@ -1,0 +1,70 @@
+name: Workflow Web Manual
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_tag:
+        description: 'Tag del test'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - '@Smoke'
+        - '@Success'
+        - '@regression' 
+        
+      #test_tag:
+      #  description: 'Tag del test'
+      #  required: true
+      #  default: '@Smoke'
+        
+      test_type:
+        description: 'Tipo de test'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - parallel
+        - Secuencial
+        
+      #test_type:
+      #  description: 'Tipo de test'
+      #  required: true
+      #  default: 'parallel'
+        
+      browser_type:
+        description: 'Tipo de Browser'
+        required: true
+        default: 'chromeHeadless'
+      
+      language:
+        description: 'Idioma'
+        required: true
+        default: '@EN'        
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    container: crowdar/lippia:3.1.2.2
+    env:
+      TAG: '${{ github.event.inputs.test_tag }}'
+      TESTTYPE: '${{ github.event.inputs.test_type }}'
+      BROWSERTYPE: '${{ github.event.inputs.browser_type }}'
+      LANG: '${{ github.event.inputs.language }}'
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: valores de las variables de entorno
+      run: echo $TAG,
+                $TESTTYPE,
+                $LANG,
+                $BROWSERTYPE
+    - name: Realizando Pruebas
+      continue-on-error: true
+      run: mvn clean test -P$TESTTYPE -P$BROWSERTYPE -Dcucumber.tags="--tags $TAG" -Dcrowdar.cucumber.filter.language="'$LANG'"
+       
+    - name: Subiendo informe
+      uses: actions/upload-artifact@v3
+      with:
+        path: target/report/
